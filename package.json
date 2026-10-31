@@ -1,0 +1,28 @@
+{
+  "name": "cse340",
+  "version": "1.0.0",
+  "description": "backend development",
+  "homepage": "https://github.com/Samklugh/cse340-course-repo#readme",
+  "bugs": {
+    "url": "https://github.com/Samklugh/cse340-course-repo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samklugh/cse340-course-repo.git"
+  },
+  "license": "ISC",
+  "author": "Samson",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node server.js"
+  },
+  
+  "dependencies": {
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
