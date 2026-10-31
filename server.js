@@ -4,10 +4,10 @@
 import express from 'express';
 
 // Define the application environment
-const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
+const nodeEnv = process.env.NODE_ENV?.toLowerCase() || 'production';
 
 // Define the port number the server will listen on
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 
@@ -15,9 +15,9 @@ const app = express();
     // res.send('Hello, my name is Samson from Express!');
 // });
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
+app.listen(port, () => {
+  console.log(`Server is running at http://127.0.0.1:${port}`);
+  console.log(`Environment: ${nodeEnv}`);
 });
 
 
@@ -27,15 +27,15 @@ app.listen(PORT, () => {
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fileName = fileURLToPath(import.meta.url);
+const directoryName = path.dirname(fileName);
 
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
 
 // Tell Express where to find your templates
-app.set('views', path.join(__dirname, 'src/views'));
+app.set('views', path.join(directoryName, 'src/views'));
 
 
 /**
@@ -43,22 +43,22 @@ app.set('views', path.join(__dirname, 'src/views'));
   */
 
 // Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(directoryName, 'public')));
 
 
 /**
   * Routes
   */
 // app.get('/', (req, res) => {
-    // res.sendFile(path.join(__dirname, 'src/views/home.html'));
+    // res.sendFile(path.join(directoryName, 'src/views/home.html'));
 // });
 // 
 // app.get('/organizations', (req, res) => {
-    // res.sendFile(path.join(__dirname, 'src/views/organizations.html'));
+    // res.sendFile(path.join(directoryName, 'src/views/organizations.html'));
 // });
 // 
 // app.get('/projects', (req, res) => {
-    // res.sendFile(path.join(__dirname, 'src/views/projects.html'));
+    // res.sendFile(path.join(directoryName, 'src/views/projects.html'));
 // });
 // 
 
