@@ -13,20 +13,16 @@ import { Pool } from 'pg';
  */
 const pool = new Pool({
     connectionString: process.env.DB_URL,
-    ssl: true
+    // The course database uses a self-signed certificate.
+    // Keep TLS encryption enabled while allowing that certificate.
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 /**
- * Common SSL Issue:
- *
- * You may encounter SSL connection errors depending on your operating system, Node.js
- * version, or PostgreSQL server settings. If you have confirmed your credentials are
- * correct but still see SSL errors, try updating the 'ssl' property in the Pool
- * configuration above to:
- *
- * ssl: {
- *     rejectUnauthorized: false
- * }
+ * This course setup accepts self-signed database certificates. For production,
+ * supply the database provider's CA certificate and enable certificate validation.
  */
 
 /**
