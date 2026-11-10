@@ -68,3 +68,62 @@ FROM organization
 LEFT JOIN service_project AS project ON project.organization_id = organization.organization_id
 GROUP BY organization.organization_id, organization.name
 ORDER BY organization.organization_id;
+
+-- ========================================
+-- Categories and Project Category Memberships
+-- ========================================
+CREATE TABLE category (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE CHECK (LENGTH(TRIM(name)) > 0)
+);
+
+-- Each row links one project to one category. The composite primary key
+-- prevents duplicate memberships; foreign keys prevent orphaned memberships.
+CREATE TABLE project_category (
+    project_id INTEGER NOT NULL REFERENCES service_project(project_id) ON DELETE CASCADE,
+    category_id INTEGER NOT NULL REFERENCES category(category_id) ON DELETE CASCADE,
+    PRIMARY KEY (project_id, category_id)
+);
+
+INSERT INTO category (name)
+VALUES
+    ('Community Improvement'),
+    ('Environment and Gardening'),
+    ('Food Security'),
+    ('Education and Outreach');
+
+-- Match existing titles and category names rather than assuming generated IDs.
+INSERT INTO project_category (project_id, category_id)
+SELECT project.project_id, category.category_id
+FROM (VALUES
+    ('Community Playground Repair', 'Community Improvement'),
+    ('Accessible Ramp Build', 'Community Improvement'),
+    ('Shelter Painting Day', 'Community Improvement'),
+    ('Library Shelf Installation', 'Education and Outreach'),
+    ('Neighborhood Fence Repair', 'Community Improvement'),
+    ('Spring Garden Planting', 'Environment and Gardening'),
+    ('Composting Workshop', 'Environment and Gardening'),
+    ('Composting Workshop', 'Education and Outreach'),
+    ('Seedling Distribution', 'Environment and Gardening'),
+    ('School Garden Preparation', 'Environment and Gardening'),
+    ('School Garden Preparation', 'Education and Outreach'),
+    ('Food Pantry Harvest', 'Food Security'),
+    ('Food Pantry Harvest', 'Environment and Gardening'),
+    ('Food Pantry Sorting', 'Food Security'),
+    ('Winter Clothing Drive', 'Community Improvement'),
+    ('Senior Center Activity Day', 'Community Improvement'),
+    ('River Trail Cleanup', 'Environment and Gardening'),
+    ('School Supply Packing', 'Education and Outreach')
+) AS membership (project_title, category_name)
+JOIN service_project AS project ON project.title = membership.project_title
+JOIN category ON category.name = membership.category_name;
+
+-- Verify each project's categories. Every project should have at least one.
+SELECT project.project_id, project.title,
+       STRING_AGG(category.name, ', ' ORDER BY category.name) AS categories,
+       COUNT(category.category_id) AS category_count
+FROM service_project AS project
+LEFT JOIN project_category ON project_category.project_id = project.project_id
+LEFT JOIN category ON category.category_id = project_category.category_id
+GROUP BY project.project_id, project.title
+ORDER BY project.project_id;
